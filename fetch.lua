@@ -1,16 +1,17 @@
 --[[
 
     Fetch for Playdate
-        A wrapper to simplify making HTTP requests
+        A wrapper to simplify HTTP requests
 
     NOTE
         Make sure you call HTTP.update()
-        in your playdate.update handler!
+        in your playdate.update handler
 
     PARAMS
-        HTTP.fetch(url, callback)
+        HTTP.fetch(url, callback, [reason])
             - url: string of the full URL (including http:// or https://)
             - callback: function that is called with (response, error)
+            - reason: (optional) string that is shown in the network access popup
         The response contains { ok: boolean, status: number, body: string }
 
     EXAMPLE USAGE

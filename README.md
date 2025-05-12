@@ -1,12 +1,12 @@
 # Fetch for Playdate
 
-Easy HTTP requests for Playdate!
+A wrapper to simplify HTTP requests
 
 ## The Basics
 
 ```lua
--- Make sure you call HTTP.update()
--- from inside playdate.update
+-- make sure you call HTTP.update()
+-- in your playdate.update handler
 
 HTTP.fetch("http://example.com", function(res, err)
     if not err and res.ok then
@@ -21,12 +21,13 @@ end)
 2. Call `HTTP.update()` in your `playdate.update` handler
 3. Use `HTTP.fetch()` from anywhere in your code!
 
-### HTTP.fetch(url, onComplete)
+### HTTP.fetch(url, onComplete, \[reason\])
 
 Schedules a basic GET request to the provided URL.
 
 - `url` is a _string_ containing the full URL, including `http://` or `https://`
 - `onComplete` is a _function_ that is called when the request is completed
+- `reason` (optional) is a _string_ that the system shows in the network access popup
 
 ### onComplete(response, error)
 
