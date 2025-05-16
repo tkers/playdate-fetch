@@ -3,22 +3,39 @@
     Fetch for Playdate
         A wrapper to simplify HTTP requests
 
-    NOTE
+    SETUP
         Make sure you call HTTP.update()
         in your playdate.update handler
 
     PARAMS
-        HTTP.fetch(url, callback, [reason])
+        HTTP.fetch(url, [options], callback, [reason])
             - url: string of the full URL (including http:// or https://)
+            - options: (optional) table with additional options for the request
             - callback: function that is called with (response, error)
             - reason: (optional) string that is shown in the network access popup
-        The response contains { ok: boolean, status: number, body: string }
 
-    EXAMPLE USAGE
+        The response table contains:
+            { ok: boolean, status: number, body: string }
+
+        The options table can contain the following (all optional):
+            - method: string of the HTTP verb to use
+            - headers: string or table to set the request headers
+            - body: string of the data to send with the request
+
+    BASIC EXAMPLE
         HTTP.fetch("http://example.com", function(res, err)
             if not err and res.ok then
                 print(res.body)
             end
+        end)
+
+    ADVANCED EXAMPLE
+        HTTP.fetch("https://example.com/auth", {
+            method: "POST",
+            headers = { ["Content-Type"] = "application/json" },
+            body = json.encode({ username = "crankles", password = "*****" })
+        }, function(res)
+            -- ...
         end)
 
 ]] --
@@ -65,7 +82,7 @@ local function runTask(task, callback)
         end
     end)
 
-    local ok, err = conn:get(task.path)
+    local ok, err = conn:query(task.method, task.path, task.headers, task.body)
     if not ok then
         callback(nil, err)
     end
@@ -84,13 +101,21 @@ function HTTP.update()
     end)
 end
 
-function HTTP.fetch(url, onComplete, reason)
+function HTTP.fetch(url, options, onComplete, reason)
+    HTTP.scheduled = true
+    if type(options) == 'function' then
+        options, onComplete, reason = {}, options, onComplete
+    end
+
     local scheme, host, port, path = parseURL(url)
     queue[#queue + 1] = {
         host = host,
         port = port or (scheme == "https" and 443 or 80),
         ssl = scheme == "https",
         path = path ~= "" and path or "/",
+        method = options.method or "GET",
+        headers = options.headers,
+        body = options.body,
         reason = reason,
         onComplete = onComplete or noop
     }

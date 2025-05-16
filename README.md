@@ -4,6 +4,8 @@ A wrapper to simplify HTTP requests
 
 ## The Basics
 
+Making a simple GET request:
+
 ```lua
 -- make sure you call HTTP.update()
 -- in your playdate.update handler
@@ -12,6 +14,18 @@ HTTP.fetch("http://example.com", function(res, err)
     if not err and res.ok then
         print(res.body)
     end
+end)
+```
+
+A more complex example, sending a POST request with additional data:
+
+```lua
+HTTP.fetch("https://example.com/login", {
+    method = "POST",
+    headers = { ["Content-Type"] = "application/json" },
+    body = json.encode({ username = "crankles", password = "*****" })
+}, function(res)
+    -- ...
 end)
 ```
 
