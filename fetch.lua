@@ -15,7 +15,7 @@
             - reason: (optional) string that is shown in the network access popup
 
         The response table contains:
-            { ok: boolean, status: number, body: string }
+            { ok: boolean, status: number, body: string, headers: table }
 
         The options table can contain the following (all optional):
             - method: string of the HTTP verb to use
@@ -35,6 +35,7 @@
             headers = { ["Content-Type"] = "application/json" },
             body = json.encode({ username = "crankles", password = "*****" })
         }, function(res)
+            local token = res.headers["Authorization"]
             -- ...
         end)
 
@@ -56,9 +57,10 @@ local function runTask(task, callback)
 
     conn:setConnectTimeout(5)
 
-    local status
+    local status, headers
     conn:setHeadersReadCallback(function()
         status = conn:getResponseStatus()
+        headers = conn:getResponseHeaders()
     end)
 
     local buffer = {}
@@ -77,6 +79,7 @@ local function runTask(task, callback)
             callback({
                 ok = status >= 200 and status < 300,
                 status = status,
+                headers = headers,
                 body = table.concat(buffer, ""),
             })
         end

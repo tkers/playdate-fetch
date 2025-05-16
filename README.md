@@ -25,6 +25,7 @@ HTTP.fetch("https://example.com/login", {
     headers = { ["Content-Type"] = "application/json" },
     body = json.encode({ username = "crankles", password = "*****" })
 }, function(res)
+    local token = res.headers["Authorization"]
     -- ...
 end)
 ```
@@ -51,6 +52,7 @@ Called when the request is completed.
   - `ok` a _boolean_ indicating that the request completed successfully (a `2xx` status code)
   - `status` a _number_ containing the status code
   - `body` a _string_ containing the contents of the response
+  - `headers` a _table_ containing the response headers
 - `err` is a _string_ containing the error message if `response` is `nil`
 
 ## Error Handling
