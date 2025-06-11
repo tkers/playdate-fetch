@@ -51,6 +51,7 @@ Called when the request is completed.
 - `response` is a _table_ containing the following fields:
   - `ok` a _boolean_ indicating that the request completed successfully (a `2xx` status code)
   - `status` a _number_ containing the status code
+  - `statusText` a _string_ containing the status message
   - `body` a _string_ containing the contents of the response
   - `headers` a _table_ containing the response headers
 - `err` is a _string_ containing the error message if `response` is `nil`
